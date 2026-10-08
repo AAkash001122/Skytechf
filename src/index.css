@@ -1,0 +1,194 @@
+@import 'tailwindcss';
+
+@theme {
+  /*
+   * SkyTech design system, built from the logo (deep navy plate, cyan lettering, white highlights)
+   *  Surfaces : bg (logo navy) < surface < card-bright (surface + 5% ink); line for borders
+   *  Text     : ink (primary), muted (secondary), primary-text (links, soft blue)
+   *  Cyan     : primary = brand accent: buttons, active states, labels, icons, focus rings
+   *  Dark cyan: accent  = borders, hovers, strokes and soft glows
+   *  Blue     : blue    = secondary technology accent: gradient ends and the final CTA only
+   *  Emerald  : status and success only
+   */
+  --color-bg: #080D19;
+  --color-surface: #0D1424;
+  --color-line: #1F2A44;
+  --color-ink: #F8FAFC;
+  --color-muted: #94A3B8;
+  --color-primary: #20C7E8;
+  --color-primary-text: #38BDF8;
+  --color-accent: #1597B0;
+  --color-accent-text: #20C7E8;
+  --color-blue: #2563EB;
+  --color-success: #34D399;
+
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; color-scheme: dark; }
+  input, select, textarea { color: var(--color-ink); }
+  option { background-color: var(--color-surface); color: var(--color-ink); }
+  button:disabled { cursor: not-allowed; }
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; }
+  }
+}
+
+@utility text-gradient {
+  background-image: linear-gradient(90deg, var(--color-primary), var(--color-primary-text));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility hero-glow {
+  background:
+    radial-gradient(60% 55% at 72% 18%, color-mix(in srgb, var(--color-blue) 22%, transparent), transparent 70%),
+    radial-gradient(45% 45% at 88% 48%, color-mix(in srgb, var(--color-primary) 13%, transparent), transparent 70%),
+    radial-gradient(40% 40% at 25% 0%, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent 70%);
+}
+
+@utility cta-gradient {
+  background-image: linear-gradient(120deg, color-mix(in srgb, var(--color-blue) 75%, var(--color-bg)), var(--color-blue));
+}
+
+@utility glow-hover {
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  &:hover {
+    border-color: color-mix(in srgb, var(--color-accent) 55%, transparent);
+    box-shadow: 0 0 40px -12px color-mix(in srgb, var(--color-accent) 55%, transparent);
+  }
+}
+
+@utility grid-fade {
+  background-image:
+    linear-gradient(var(--color-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(70% 60% at 60% 0%, black, transparent 75%);
+  opacity: 0.35;
+}
+
+/* Brighter premium surfaces + card spotlight */
+@utility card-bright {
+  background-color: color-mix(in srgb, var(--color-surface) 82%, var(--color-ink) 5%);
+}
+@utility spotlight {
+  position: relative;
+  overflow: hidden;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--color-accent) 20%, transparent), transparent 70%);
+  }
+  &:hover::before { opacity: 1; }
+}
+
+/* Live motion (transform/opacity only, so it stays on the GPU) */
+@keyframes float-y { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes drift-a { 0%, 100% { transform: translate3d(0, 0, 0) scale(1); } 50% { transform: translate3d(8vw, 6vh, 0) scale(1.15); } }
+@keyframes drift-b { 0%, 100% { transform: translate3d(0, 0, 0) scale(1.1); } 50% { transform: translate3d(-7vw, -5vh, 0) scale(0.95); } }
+@keyframes bar-pulse { 0%, 100% { transform: scaleY(0.35); } 50% { transform: scaleY(1); } }
+@keyframes type-line { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes shimmer { to { background-position: 200% 0; } }
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+
+@utility float-y { animation: float-y 6s ease-in-out infinite; }
+@utility orb-a { animation: drift-a 26s ease-in-out infinite; }
+@utility orb-b { animation: drift-b 32s ease-in-out infinite; }
+@utility bar-pulse { transform-origin: bottom; animation: bar-pulse 2.4s ease-in-out infinite; }
+@utility type-line { animation: type-line 0.9s steps(28, end) both; }
+@utility caret { animation: blink 1s step-end infinite; }
+@utility cta-animated {
+  background-image: linear-gradient(110deg, color-mix(in srgb, var(--color-blue) 75%, var(--color-bg)), var(--color-blue), color-mix(in srgb, var(--color-blue) 75%, var(--color-bg)));
+  background-size: 200% 100%;
+  animation: shimmer 9s linear infinite;
+}
+@utility spin-slow { animation: spin-slow 40s linear infinite; }
+@utility glass {
+  background-color: color-mix(in srgb, var(--color-surface) 70%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+/* Tech structures: network, pipeline, orbit, mini visuals */
+@keyframes flow { to { background-position: 24px 0; } }
+@keyframes dash-flow { to { stroke-dashoffset: -20; } }
+@keyframes heartbeat { to { stroke-dashoffset: 0; } }
+@keyframes spin-rev { to { transform: rotate(-360deg); } }
+@keyframes fill { 0% { transform: scaleX(0); } 60%, 100% { transform: scaleX(1); } }
+@keyframes bubble {
+  0%, 8% { opacity: 0; transform: translateY(8px); }
+  16%, 84% { opacity: 1; transform: none; }
+  94%, 100% { opacity: 0; transform: translateY(-4px); }
+}
+@keyframes stack {
+  0%, 10% { opacity: 0; transform: translateY(-14px); }
+  25%, 85% { opacity: 1; transform: none; }
+  95%, 100% { opacity: 0; }
+}
+@keyframes node-pulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.5); opacity: 1; } }
+
+@utility data-flow {
+  background-image: linear-gradient(90deg, var(--color-accent) 50%, transparent 50%);
+  background-size: 12px 100%;
+  animation: flow 1.2s linear infinite;
+}
+@utility dash-flow { stroke-dasharray: 3 4; animation: dash-flow 1.4s linear infinite; }
+@utility heartbeat { stroke-dasharray: 1; stroke-dashoffset: 1; animation: heartbeat 2.8s linear infinite; }
+@utility orbit-spin { animation: spin-slow var(--d, 60s) linear infinite; }
+@utility orbit-spin-rev { animation: spin-rev var(--d, 60s) linear infinite; }
+@utility orbit-counter { animation: spin-rev var(--d, 60s) linear infinite; }
+@utility orbit-counter-rev { animation: spin-slow var(--d, 60s) linear infinite; }
+@utility fill-bar { transform-origin: left; animation: fill 4.5s ease-in-out infinite; }
+@utility bubble { animation: bubble 7s ease-in-out infinite; }
+@utility stack-block { animation: stack 5s ease-in-out infinite; }
+@utility node-pulse { animation: node-pulse 2.4s ease-in-out infinite; }
+@utility grid-glow {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--color-accent) 70%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-accent) 70%, transparent) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(240px circle at var(--gx, -300px) var(--gy, -300px), black, transparent 70%);
+  opacity: 0.55;
+}
+
+.orbit-wrap:hover .orbit-spin, .orbit-wrap:hover .orbit-spin-rev,
+.orbit-wrap:hover .orbit-counter, .orbit-wrap:hover .orbit-counter-rev,
+.orbit-wrap:focus-within .orbit-spin, .orbit-wrap:focus-within .orbit-spin-rev,
+.orbit-wrap:focus-within .orbit-counter, .orbit-wrap:focus-within .orbit-counter-rev { animation-play-state: paused; }
+
+@utility bright-bg {
+  background:
+    radial-gradient(50% 70% at 20% 0%, color-mix(in srgb, var(--color-blue) 13%, transparent), transparent 70%),
+    radial-gradient(45% 70% at 85% 100%, color-mix(in srgb, var(--color-primary) 8%, transparent), transparent 70%),
+    color-mix(in srgb, var(--color-surface) 85%, var(--color-ink) 4%);
+}
+
+@utility dot-grid {
+  background-image: radial-gradient(color-mix(in srgb, var(--color-ink) 22%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(to bottom, black, transparent 85%);
+}
+
+@keyframes twinkle { 0%, 100% { opacity: 0.25; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.1); } }
+@utility twinkle { animation: twinkle 4s ease-in-out infinite; }
