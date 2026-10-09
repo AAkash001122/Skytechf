@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CircleAlert, Eye, Mail, MailOpen, Phone, Reply, Search, Trash2 } from 'lucide-react';
+import { CircleAlert, Eye, Inbox, Mail, MailOpen, Phone, Reply, Search, Trash2 } from 'lucide-react';
 import { api } from './api';
 import { useNotifications } from './NotificationsContext';
 import ReplyModal from './ReplyModal';
@@ -118,7 +118,13 @@ export default function Messages() {
 
         {!data && !error && [0, 1, 2, 3, 4].map((i) => <RowSkeleton key={i} />)}
 
-        {data && data.items.length === 0 && <p className="px-5 py-14 text-center text-muted">No messages found.</p>}
+        {data && data.items.length === 0 && (
+          <div className="flex flex-col items-center px-5 py-16 text-center">
+            <span className="rounded-2xl bg-primary/10 p-4 text-primary"><Inbox size={28} aria-hidden="true" /></span>
+            <p className="mt-4 font-semibold">{query || status !== 'all' ? 'No messages match this filter' : 'No messages yet'}</p>
+            <p className="mt-1 max-w-sm text-sm text-muted">{query || status !== 'all' ? 'Try a different search or switch back to All.' : 'New enquiries from the website contact form will appear here.'}</p>
+          </div>
+        )}
 
         {data && data.items.length > 0 && (
           <ul className="divide-y divide-line">

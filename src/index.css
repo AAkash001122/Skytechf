@@ -49,8 +49,11 @@
   }
 }
 
+@keyframes gradient-pan { to { background-position: 200% center; } }
 @utility text-gradient {
-  background-image: linear-gradient(90deg, var(--color-primary), var(--color-primary-text));
+  background-image: linear-gradient(90deg, var(--color-primary), var(--color-primary-text), var(--color-blue), var(--color-primary-text), var(--color-primary));
+  background-size: 200% auto;
+  animation: gradient-pan 9s linear infinite;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -192,3 +195,132 @@
 
 @keyframes twinkle { 0%, 100% { opacity: 0.25; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.1); } }
 @utility twinkle { animation: twinkle 4s ease-in-out infinite; }
+
+/* Welcome overlay */
+@keyframes welcome-shine { 0% { transform: translateX(0) skewX(-12deg); } 60%, 100% { transform: translateX(520%) skewX(-12deg); } }
+@utility welcome-shine { animation: welcome-shine 3.6s ease-in-out infinite; }
+@keyframes scan { 0% { transform: translateY(-10%); opacity: 0; } 10%, 90% { opacity: 1; } 100% { transform: translateY(1100%); opacity: 0; } }
+@utility scan-line { animation: scan 4.2s linear infinite; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+@utility marquee { animation: marquee 22s linear infinite; }
+@keyframes countdown { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@utility countdown { transform-origin: left; animation: countdown 10s linear forwards; }
+@keyframes glitch {
+  0%, 90%, 100% { transform: none; text-shadow: none; clip-path: none; }
+  91% { transform: translate(-2px, 0); text-shadow: 2px 0 rgba(59, 130, 246, 0.9), -2px 0 rgba(74, 222, 128, 0.7); }
+  93% { transform: translate(2px, 1px); text-shadow: -2px 0 rgba(59, 130, 246, 0.9), 2px 0 rgba(74, 222, 128, 0.7); clip-path: inset(30% 0 40% 0); }
+  95% { transform: translate(-1px, 0); text-shadow: 1px 0 rgba(59, 130, 246, 0.9); clip-path: none; }
+}
+@utility glitch { animation: glitch 5.5s steps(1, end) infinite; }
+
+/* Site-wide tech accents (kept subtle): HUD corner brackets that appear on card hover */
+@utility hud {
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    --hud: color-mix(in srgb, var(--color-primary-text) 70%, transparent);
+    background:
+      linear-gradient(var(--hud) 0 0) top left / 12px 1px no-repeat,
+      linear-gradient(var(--hud) 0 0) top left / 1px 12px no-repeat,
+      linear-gradient(var(--hud) 0 0) top right / 12px 1px no-repeat,
+      linear-gradient(var(--hud) 0 0) top right / 1px 12px no-repeat,
+      linear-gradient(var(--hud) 0 0) bottom left / 12px 1px no-repeat,
+      linear-gradient(var(--hud) 0 0) bottom left / 1px 12px no-repeat,
+      linear-gradient(var(--hud) 0 0) bottom right / 12px 1px no-repeat,
+      linear-gradient(var(--hud) 0 0) bottom right / 1px 12px no-repeat;
+  }
+  &:hover::after { opacity: 1; }
+}
+
+/* Section backdrops (SectionBackdrop.jsx): slow, transform/opacity-only motion */
+@keyframes drift-up {
+  0% { transform: translateY(0); opacity: 0; }
+  12% { opacity: 0.9; }
+  85% { opacity: 0.9; }
+  100% { transform: translateY(-260px); opacity: 0; }
+}
+@utility drift-up { animation: drift-up var(--dur, 30s) linear var(--delay, 0s) infinite; }
+@keyframes p-drift {
+  0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.35; }
+  50% { transform: translate3d(16px, -24px, 0); opacity: 1; }
+}
+@utility p-drift { animation: p-drift var(--dur, 22s) ease-in-out var(--delay, 0s) infinite; }
+@keyframes grid-slide { to { transform: translateY(56px); } }
+@utility grid-slide { animation: grid-slide 7s linear infinite; }
+@keyframes pulse-glow { 0%, 100% { opacity: 0.55; transform: scale(1); } 50% { opacity: 1; transform: scale(1.08); } }
+@utility pulse-glow { animation: pulse-glow 9s ease-in-out infinite; }
+@keyframes sweep { to { transform: translateX(520%) skewX(-12deg); } }
+@utility sweep { animation: sweep 16s ease-in-out infinite; transform: skewX(-12deg); }
+
+/* Cyber/cloud layers: streams and scan beam travel the full height of their (container-sized) backdrop */
+@keyframes stream-fall {
+  from { transform: translateY(-160px); opacity: 0; }
+  10%, 90% { opacity: 1; }
+  to { transform: translateY(100cqh); opacity: 0; }
+}
+@utility stream-fall { animation: stream-fall var(--dur, 10s) linear var(--delay, 0s) infinite; }
+@keyframes scan-sweep { from { transform: translateY(-140px); } to { transform: translateY(100cqh); } }
+@utility scan-sweep { animation: scan-sweep 12s linear infinite; }
+@keyframes radar-spin { to { transform: rotate(360deg); } }
+@utility radar-spin { animation: radar-spin 7s linear infinite; }
+
+/* Premium polish: button shine, glowing section rule, heading glow, 3D card tilt, admin headings */
+@utility btn-shine {
+  position: relative;
+  overflow: hidden;
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 -60%;
+    width: 40%;
+    transform: skewX(-18deg) translateX(0);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    opacity: 0;
+    pointer-events: none;
+  }
+  &:hover::after { opacity: 1; transform: skewX(-18deg) translateX(480%); transition: transform 0.7s ease, opacity 0.2s; }
+}
+@keyframes rule-travel { from { transform: translateX(-120%); } to { transform: translateX(420%); } }
+@utility section-rule {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-blue) 45%, transparent), transparent);
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 24%;
+    background: linear-gradient(90deg, transparent, var(--color-primary-text), transparent);
+    animation: rule-travel 7s ease-in-out infinite;
+  }
+}
+@utility heading-glow {
+  position: absolute;
+  z-index: -1;
+  width: 28rem;
+  height: 9rem;
+  max-width: 90vw;
+  border-radius: 9999px;
+  pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-blue) 26%, transparent), transparent);
+}
+@utility tilt {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px));
+  transition: transform 0.25s ease-out, border-color 0.25s, box-shadow 0.25s;
+  will-change: transform;
+}
+@keyframes bar-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@utility bar-grow { transform-origin: bottom; animation: bar-grow 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.admin-main h1 {
+  background-image: linear-gradient(90deg, #fff 55%, color-mix(in srgb, var(--color-primary-text) 80%, #fff));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

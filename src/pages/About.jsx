@@ -14,7 +14,7 @@ export default function About() {
         description="SkyTech is a small software studio in Mumbai. Learn how we work and what we value when building web products for clients in India and worldwide."
         path="/about"
       />
-      <Section className="pb-10 sm:pb-12">
+      <Section className="pb-10 sm:pb-12" bg="nodes">
         <SectionHeading eyebrow="About" title="A focused team that builds products to last" text={site.about.intro} />
         <Reveal className="mt-8 max-w-2xl"><p className="text-lg text-muted">{site.about.story}</p></Reveal>
       </Section>

@@ -28,7 +28,7 @@ export default function Process() {
   };
 
   return (
-    <Section id="process" className="bright-bg border-y border-line">
+    <Section id="process" className="bright-bg border-y border-line" bg="flow">
       <SectionHeading
         eyebrow="How we work"
         title="A clear process from first call to launch"

@@ -44,3 +44,28 @@ export async function api(path, { method = 'GET', body } = {}) {
   }
   return data;
 }
+
+/** PUT raw file bytes with upload progress (fetch cannot report upload progress). Resolves with the parsed JSON body. */
+export function uploadFile(path, file, { onProgress } = {}) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', `${API_URL}/api/admin${path}`);
+    const token = getToken();
+    if (token) xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    xhr.setRequestHeader('Content-Type', file.type || 'audio/mpeg');
+    xhr.setRequestHeader('X-Filename', encodeURIComponent(file.name));
+    xhr.upload.onprogress = (e) => { if (e.lengthComputable) onProgress?.(Math.round((e.loaded / e.total) * 100)); };
+    xhr.onerror = () => reject(new ApiError('Cannot reach the server. Check your connection and try again.', 0));
+    xhr.onload = () => {
+      let data = {};
+      try { data = JSON.parse(xhr.responseText); } catch { /* non-JSON error page */ }
+      if (xhr.status === 401) {
+        setToken(null);
+        window.dispatchEvent(new Event('admin-logout'));
+      }
+      if (xhr.status >= 200 && xhr.status < 300) resolve(data);
+      else reject(new ApiError(data.message || 'Upload failed.', xhr.status));
+    };
+    xhr.send(file);
+  });
+}

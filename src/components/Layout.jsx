@@ -1,13 +1,17 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import AiChat from './chat/AiChat';
 import AmbientBackground from './AmbientBackground';
 import ScrollProgress from './ScrollProgress';
+import WelcomeIntro from './welcome/WelcomeIntro';
 
 export default function Layout() {
   const { pathname } = useLocation();
+  // Overlay on the existing homepage only. Layout stays mounted across route changes, so it shows once per page load.
+  const [intro, setIntro] = useState(pathname === '/');
+  const closeIntro = useCallback(() => setIntro(false), []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -27,6 +31,7 @@ export default function Layout() {
       <main id="main"><Outlet /></main>
       <Footer />
       <AiChat />
+      <WelcomeIntro open={intro} onClose={closeIntro} />
     </>
   );
 }

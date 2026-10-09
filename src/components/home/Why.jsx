@@ -13,7 +13,7 @@ const spans = ['lg:col-span-7', 'lg:col-span-5', 'lg:col-span-5', 'lg:col-span-7
 
 export default function Why() {
   return (
-    <Section>
+    <Section bg="geo">
       <SectionHeading
         eyebrow="Why SkyTech"
         title="A small team that behaves like part of yours"

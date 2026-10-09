@@ -4,7 +4,30 @@ import { ArrowRight } from 'lucide-react';
 import { site } from '../../config/site';
 import { Container } from '../Section';
 import Button from '../Button';
+import SectionBackdrop from '../SectionBackdrop';
 import HeroVisual from './HeroVisual';
+
+// A handful of glowing network nodes with data links, drawn faintly behind the hero.
+const nodes = [[8, 18], [22, 62], [38, 30], [58, 12], [74, 44], [90, 20], [66, 78]];
+const links = [[0, 2], [2, 3], [3, 5], [2, 4], [1, 2], [4, 6], [4, 5]];
+function NetworkNodes() {
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden opacity-40 sm:block">
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
+        {links.map(([x, y]) => (
+          <line key={`${x}-${y}`} x1={nodes[x][0]} y1={nodes[x][1]} x2={nodes[y][0]} y2={nodes[y][1]} stroke="rgba(59,130,246,0.55)" strokeWidth="1" vectorEffect="non-scaling-stroke" className="dash-flow" />
+        ))}
+      </svg>
+      {nodes.map(([x, y], i) => (
+        <span
+          key={i}
+          className={`node-pulse absolute size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full ${i % 4 === 0 ? 'bg-success shadow-[0_0_10px_var(--color-success)]' : 'bg-primary-text shadow-[0_0_10px_var(--color-blue)]'}`}
+          style={{ left: `${x}%`, top: `${y}%`, animationDelay: `${i * -0.5}s` }}
+        />
+      ))}
+    </div>
+  );
+}
 
 // Small twinkling stars echo the sparkles in the SkyTech logo.
 const stars = [
@@ -33,11 +56,13 @@ export default function Hero() {
     <section
       ref={ref}
       onPointerMove={onMove}
-      className="relative overflow-hidden pb-16 pt-12 sm:pb-24 sm:pt-20 lg:pt-24"
+      className="relative isolate overflow-hidden pb-16 pt-12 sm:pb-24 sm:pt-20 lg:pt-24"
     >
+      <SectionBackdrop variant="hero" />
       <div aria-hidden="true" className="hero-glow pointer-events-none absolute inset-0" />
       <div aria-hidden="true" className="grid-fade pointer-events-none absolute inset-0" />
       <div aria-hidden="true" className="grid-glow pointer-events-none absolute inset-0" />
+      <NetworkNodes />
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         {stars.map((st, i) => (
           <svg
@@ -94,7 +119,22 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
         >
-          <HeroVisual />
+          <div className="relative">
+            <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 hidden h-[34rem] w-[34rem] -translate-x-1/2 -translate-y-1/2 lg:block">
+              <svg viewBox="0 0 400 400" className="h-full w-full opacity-70">
+                <g className="orbit-spin" style={{ '--d': '70s', transformOrigin: '200px 200px' }}>
+                  <circle cx="200" cy="200" r="192" fill="none" stroke="rgba(96,165,250,.28)" strokeWidth="1" strokeDasharray="2 9" />
+                  <circle cx="200" cy="8" r="3.5" fill="#93C5FD" className="node-pulse" style={{ transformOrigin: '200px 8px' }} />
+                </g>
+                <g className="orbit-spin-rev" style={{ '--d': '48s', transformOrigin: '200px 200px' }}>
+                  <circle cx="200" cy="200" r="158" fill="none" stroke="rgba(59,130,246,.35)" strokeWidth="1.2" strokeDasharray="50 20 6 20" />
+                  <circle cx="358" cy="200" r="3" fill="#34D399" className="node-pulse" style={{ transformOrigin: '358px 200px' }} />
+                </g>
+              </svg>
+            </div>
+            <div aria-hidden="true" className="pointer-events-none absolute -inset-8 -z-10 rounded-[3rem]" style={{ background: 'radial-gradient(closest-side, color-mix(in srgb, var(--color-blue) 24%, transparent), transparent)' }} />
+            <HeroVisual />
+          </div>
         </motion.div>
       </Container>
     </section>

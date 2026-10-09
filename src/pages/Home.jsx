@@ -21,7 +21,7 @@ export default function Home() {
       />
       <Hero />
 
-      <Section id="services" className="bright-bg">
+      <Section id="services" className="bright-bg" bg="glow">
         <SectionHeading
           eyebrow="Services"
           title="Everything you need to launch and grow online"

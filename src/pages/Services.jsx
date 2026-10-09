@@ -20,7 +20,7 @@ export default function Services() {
           text="Whether you need a new product, a better internal tool or someone to look after what you already have, we can help."
         />
       </Section>
-      <Section className="pt-0 sm:pt-0"><ServicesNetwork /></Section>
+      <Section className="pt-0 sm:pt-0" bg="glow"><ServicesNetwork /></Section>
       <Process />
       <Engagement />
       <CtaBanner />

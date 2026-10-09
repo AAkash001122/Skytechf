@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { site } from '../../config/site';
+import SectionBackdrop from '../SectionBackdrop';
 import { Container } from '../Section';
 import Reveal from '../Reveal';
 import TechIcon from '../TechIcon';
@@ -67,8 +68,9 @@ export default function TechStrip() {
   const [hovered, setHovered] = useState(null);
 
   return (
-    <section aria-labelledby="tech-heading" className="bright-bg overflow-hidden border-y border-line py-20 sm:py-28">
-      <Container>
+    <section aria-labelledby="tech-heading" className="bright-bg relative isolate overflow-hidden border-y border-line py-20 sm:py-28">
+      <SectionBackdrop variant="tech" />
+      <Container className="relative">
         <div className="grid items-center gap-14 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
             <Reveal>

@@ -16,6 +16,7 @@ const AdminLayout = lazy(() => import('./admin/AdminLayout'));
 const ForgotPassword = lazy(() => import('./admin/ForgotPassword'));
 const ResetPassword = lazy(() => import('./admin/ResetPassword'));
 const ChangePassword = lazy(() => import('./admin/ChangePassword'));
+const AudioSettings = lazy(() => import('./admin/AudioSettings'));
 const Dashboard = lazy(() => import('./admin/Dashboard'));
 const Messages = lazy(() => import('./admin/Messages'));
 const MessageDetail = lazy(() => import('./admin/MessageDetail'));
@@ -49,6 +50,7 @@ export default function App() {
           <Route element={<AdminLayout />}>
             <Route path="change-password" element={<ChangePassword />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="audio" element={<AudioSettings />} />
             <Route path="messages" element={<Messages />} />
             <Route path="messages/:id" element={<MessageDetail />} />
           </Route>

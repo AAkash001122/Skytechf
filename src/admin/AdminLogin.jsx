@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, LoaderCircle } from 'lucide-react';
 import { useAuth } from './AuthContext';
+import { playAdminWelcome, preloadAdminAudio } from '../audio/audioManager';
 import AuthShell, { inputClass, Notice, primaryBtn } from './AuthShell';
 
 export default function AdminLogin() {
@@ -14,6 +15,8 @@ export default function AdminLogin() {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
+  useEffect(() => { preloadAdminAudio(); }, []);
+
   const from = location.state?.from;
   const target = typeof from === 'string' && from.startsWith('/admin') ? from : '/admin/dashboard';
   if (admin) return <Navigate to={target} replace />;
@@ -24,6 +27,7 @@ export default function AdminLogin() {
     setBusy(true);
     try {
       await login(email.trim(), password);
+      playAdminWelcome(); // only reached after the admin endpoint accepted the credentials
       navigate(target, { replace: true });
     } catch (err) {
       setError(err.message);

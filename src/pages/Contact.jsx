@@ -87,7 +87,7 @@ export default function Contact() {
         description="Tell SkyTech about your project. Get a free quote by form, WhatsApp, email or a booked call. We reply within one working day."
         path="/contact"
       />
-      <Section>
+      <Section bg="network">
         <SectionHeading
           eyebrow="Contact"
           title="Tell us about your project"

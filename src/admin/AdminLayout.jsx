@@ -1,33 +1,81 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, Navigate, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Bell, ExternalLink, Inbox, KeyRound, LayoutDashboard, LogOut, Menu, X } from 'lucide-react';
+import { useReducedMotion } from 'framer-motion';
+import { Bell, ExternalLink, Inbox, KeyRound, LayoutDashboard, LogOut, Menu, Volume2, X } from 'lucide-react';
 import { useAuth } from './AuthContext';
 import { useNotifications } from './NotificationsContext';
 import { timeAgo } from './ui';
 import Logo from '../components/Logo';
+import { CircuitBackdrop } from '../components/welcome/WelcomeIntro';
+import BinaryRain from '../components/welcome/BinaryRain';
+import { CloudDiagram } from '../components/SectionBackdrop';
 
-const nav = [
-  { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/admin/messages', label: 'Contact messages', icon: Inbox, badge: true },
-  { to: '/admin/change-password', label: 'Change password', icon: KeyRound },
+/** Static navy backdrop with a faint grid, blue glow and slow circuit pulses. No blur filters, so nothing flashes on navigation. */
+function AdminBackdrop() {
+  const reduce = useReducedMotion();
+  const [wide, setWide] = useState(() => window.matchMedia('(min-width: 1024px)').matches);
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const on = () => setWide(mq.matches);
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
+  return (
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-0 overflow-hidden">
+      <div className="absolute inset-0" style={{ background: 'radial-gradient(60% 45% at 75% 0%, color-mix(in srgb, var(--color-blue) 16%, transparent), transparent 70%), radial-gradient(40% 40% at 0% 100%, color-mix(in srgb, var(--color-blue) 9%, transparent), transparent 70%)' }} />
+      <div className="grid-fade absolute inset-0 opacity-[0.18]" />
+      <CircuitBackdrop className="opacity-[0.07]" />
+      {wide && (
+        <>
+          {!reduce && (
+            <div className="absolute inset-y-0 right-0 w-1/4 opacity-[0.16]" style={{ maskImage: 'linear-gradient(to left, #000, transparent)', WebkitMaskImage: 'linear-gradient(to left, #000, transparent)' }}>
+              <BinaryRain density={0.2} blueRatio={0.6} className="opacity-100" />
+            </div>
+          )}
+          <CloudDiagram idp="adm" animateMotion={!reduce} className="bottom-16 right-8 hidden w-96 opacity-[0.10] 2xl:block" />
+        </>
+      )}
+    </div>
+  );
+}
+
+const navGroups = [
+  {
+    title: 'Manage',
+    items: [
+      { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+      { to: '/admin/messages', label: 'Contact messages', icon: Inbox, badge: true },
+    ],
+  },
+  {
+    title: 'Settings',
+    items: [
+      { to: '/admin/audio', label: 'Audio & Welcome', icon: Volume2 },
+      { to: '/admin/change-password', label: 'Change password', icon: KeyRound },
+    ],
+  },
 ];
 
 function Sidebar({ onNavigate }) {
   const { unread } = useNotifications();
+  const { admin } = useAuth();
   return (
     <div className="flex h-full flex-col">
       <div className="px-5 pb-2 pt-5"><Logo sizeClass="h-11" /></div>
-      <p className="px-6 pb-2 pt-5 text-[11px] font-semibold uppercase tracking-widest text-muted/80">Manage</p>
-      <nav aria-label="Admin" className="flex-1 space-y-1 px-3">
-        {nav.map(({ to, label, icon: Icon, badge }) => (
+      <nav aria-label="Admin" className="flex-1 px-3">
+        {navGroups.map((group) => (
+          <div key={group.title}>
+            <p className="px-3 pb-2 pt-5 text-[11px] font-semibold uppercase tracking-widest text-muted/80"><span aria-hidden="true" className="text-success/70">/ </span>{group.title}</p>
+            <div className="space-y-1">
+        {group.items.map(({ to, label, icon: Icon, badge }) => (
           <NavLink
             key={to}
             to={to}
             onClick={onNavigate}
             className={({ isActive }) =>
               `group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
-                isActive ? 'bg-primary/10 text-primary shadow-[inset_2px_0_0_var(--color-primary)]' : 'text-muted hover:translate-x-0.5 hover:bg-white/5 hover:text-ink'
+                isActive ? 'bg-primary/10 text-primary shadow-[inset_2px_0_0_var(--color-primary),0_0_24px_-10px_var(--color-primary)]' : 'text-muted hover:translate-x-0.5 hover:bg-white/5 hover:text-ink'
               }`
             }
           >
@@ -38,8 +86,21 @@ function Sidebar({ onNavigate }) {
             )}
           </NavLink>
         ))}
+            </div>
+          </div>
+        ))}
       </nav>
-      <div className="p-3">
+      <div className="mx-3 mb-2 flex items-center gap-3 rounded-2xl border border-line bg-white/3 p-3">
+        <span aria-hidden="true" className="relative flex size-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-blue-600 to-blue-400 text-sm font-bold text-white shadow-[0_0_18px_-4px_var(--color-blue)]">
+          {(admin?.email ?? 'A')[0].toUpperCase()}
+          <span className="absolute -bottom-0.5 -right-0.5 size-3 rounded-full border-2 border-[#0A1122] bg-success" />
+        </span>
+        <span className="min-w-0">
+          <span className="block truncate text-sm font-medium">{admin?.email}</span>
+          <span className="block text-xs text-muted">Administrator</span>
+        </span>
+      </div>
+      <div className="p-3 pt-1">
         <Link to="/" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-muted transition-colors hover:bg-white/5 hover:text-ink">
           <ExternalLink size={18} aria-hidden="true" /> View website
         </Link>
@@ -192,8 +253,9 @@ function Shell() {
   useEffect(() => { setDrawer(false); }, [pathname]);
 
   return (
-    <div className="min-h-screen bg-bg">
-      <aside className="fixed inset-y-0 left-0 hidden w-64 border-r border-line bg-surface/60 backdrop-blur lg:block">
+    <div className="relative min-h-screen bg-bg">
+      <AdminBackdrop />
+      <aside className="fixed inset-y-0 left-0 z-20 hidden w-64 border-r border-line bg-[#0A1122] lg:block">
         <Sidebar />
       </aside>
 
@@ -214,8 +276,8 @@ function Shell() {
         )}
       </AnimatePresence>
 
-      <div className="flex min-h-screen flex-col lg:pl-64">
-        <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-line bg-bg/80 px-4 py-3 backdrop-blur sm:px-6">
+      <div className="relative z-10 flex min-h-screen flex-col lg:pl-64">
+        <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-line bg-bg/95 px-4 py-3 sm:px-6">
           <button type="button" onClick={() => setDrawer(true)} aria-label="Open menu" className="rounded-xl border border-line p-2.5 hover:bg-white/5 lg:hidden">
             <Menu size={18} aria-hidden="true" />
           </button>
@@ -228,8 +290,8 @@ function Shell() {
             </button>
           </div>
         </header>
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6">
-          <motion.div key={pathname} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25, ease: 'easeOut' }}>
+        <main className="admin-main mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6">
+          <motion.div key={pathname} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.18, ease: 'easeOut' }}>
             <Outlet />
           </motion.div>
         </main>

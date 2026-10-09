@@ -220,7 +220,7 @@ export default function SystemHub() {
   const metrics = useLiveMetrics(inView && !reduce);
 
   return (
-    <Section id="integrations">
+    <Section id="integrations" bg="network">
       <SectionHeading
         eyebrow="Connected systems"
         title="Software that connects your whole business"

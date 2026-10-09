@@ -20,7 +20,7 @@ export default function Career() {
         path="/career"
       />
 
-      <Section className="bright-bg pb-14 sm:pb-16">
+      <Section className="bright-bg pb-14 sm:pb-16" bg="grid">
         <SectionHeading eyebrow="Career" title="Build great products with a team that cares" text={careers.intro} />
         <Reveal className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Button href={applyLink()}>Send your resume</Button>
